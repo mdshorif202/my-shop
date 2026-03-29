@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Local Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.product {
+    background: white;
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.product img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+button {
+    background: green;
+    color: white;
+    border: none;
+    padding: 8px;
+    width: 100%;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.cart {
+    position: fixed;
+    right: 10px;
+    top: 80px;
+    background: white;
+    padding: 10px;
+    width: 250px;
+    box-shadow: 0 0 10px #aaa;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+}
+
+.checkout {
+    background: blue;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>My Local Grocery Shop</h2>
+<p>Fresh groceries delivered to your door</p>
+</header>
+
+<div class="container" id="productList"></div>
+
+<div class="cart">
+<h3>Cart</h3>
+<div id="cartItems"></div>
+<p><b>Total: ₹<span id="total">0</span></b></p>
+
+<input type="text" id="name" placeholder="Your Name">
+<input type="text" id="phone" placeholder="Phone Number">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button class="checkout" onclick="placeOrder()">Place Order on WhatsApp</button>
+</div>
+
+<script>
+const products = [
+ {name:"Milk", price:30, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Rice", price:120, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Sugar", price:60, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Tea", price:90, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Bread", price:25, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Eggs", price:12, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Oil", price:150, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Salt", price:20, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Biscuits", price:40, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"},
+ {name:"Soap", price:35, img:"https://i.ibb.co.com/3y8qKWWH/i-cj-GMx9v-O-16549.jpg"}
+];
+
+let cart = [];
+
+function renderProducts(){
+ let html = "";
+ products.forEach((p,i)=>{
+  html += `
+  <div class="product">
+    <img src="${p.img}">
+    <h4>${p.name}</h4>
+    <p>₹${p.price}</p>
+    <button onclick="addToCart(${i})">Add</button>
+  </div>`;
+ });
+ document.getElementById("productList").innerHTML = html;
+}
+
+function addToCart(i){
+ cart.push(products[i]);
+ updateCart();
+}
+
+function updateCart(){
+ let html = "";
+ let total = 0;
+
+ cart.forEach((c,i)=>{
+  html += `<p>${c.name} - ₹${c.price}</p>`;
+  total += c.price;
+ });
+
+ document.getElementById("cartItems").innerHTML = html;
+ document.getElementById("total").innerText = total;
+}
+
+function placeOrder(){
+ let name = document.getElementById("name").value;
+ let phone = document.getElementById("phone").value;
+ let address = document.getElementById("address").value;
+
+ if(cart.length === 0){
+  alert("Cart is empty!");
+  return;
+ }
+
+ let orderText = `New Order:%0A`;
+ orderText += `Name: ${name}%0APhone: ${phone}%0AAddress: ${address}%0A%0AItems:%0A`;
+
+ let total = 0;
+ cart.forEach(c=>{
+  orderText += `- ${c.name} ₹${c.price}%0A`;
+  total += c.price;
+ });
+
+ orderText += `%0ATotal: ₹${total}`;
+
+ let whatsapp = "https://wa.me/YOUR_NUMBER_HERE?text=" + orderText;
+ window.open(whatsapp, "_blank");
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
